@@ -1,7 +1,7 @@
 # Secure Endpoint MCP Server — Dependency Upgrade Design
 
 **Date:** 2026-09-03
-**Source:** [ABS-299574](https://myabsolute.atlassian.net/browse/ABS-299574) — "Update dependencies of absolute public api mcp server"
+— "Update dependencies of absolute public api mcp server"
 **Scope:** Bump `fastmcp`/`mcp` and all transitive dependencies to latest, eliminate known CVEs, and add guardrails so this doesn't silently drift again.
 
 ## 1. Background
@@ -11,7 +11,7 @@ declares every dependency as a bare name with no version constraint at all, so t
 drifted two `fastmcp` majors (2.x → 4.x) and one `mcp` major (1.x → 2.x) behind without any PR
 ever surfacing the jump. The ticket was raised because:
 
-- Professional services has a customer building a Claude integration against this server, so
+- There is a client building a Claude integration against this server, so
   staying current and CVE-clean is now externally visible, not just internal hygiene.
 - `pip-audit` against the currently installed environment found **8 known vulnerabilities across
   4 transitive packages**: `idna` (1 CVE, fix `3.15`), `pygments` (1 CVE, fix `2.20.0`), `requests`
