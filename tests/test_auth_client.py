@@ -285,3 +285,27 @@ async def test_auth_client_with_custom_endpoint():
 
                 # Assert that the response is the mock response
                 assert response is mock_response
+
+
+def test_authlib_jose_import_emits_deprecation_warning():
+    """authlib>=1.8 deprecates the authlib.jose module (used by auth_client.py
+    for JWS signing) in favor of joserfc, with removal planned for authlib
+    2.0 (excluded by pyproject.toml's `authlib<2` bound). This test is a
+    tripwire: if it starts failing, authlib.jose was either removed (migrate
+    auth_client.py to joserfc) or stopped warning (safe to delete this test).
+    """
+    import importlib
+    import warnings
+
+    import authlib.jose
+    from authlib.deprecate import AuthlibDeprecationWarning
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        importlib.reload(authlib.jose)
+
+        assert any(
+            issubclass(w.category, AuthlibDeprecationWarning)
+            and "authlib.jose module is deprecated" in str(w.message)
+            for w in caught
+        )
