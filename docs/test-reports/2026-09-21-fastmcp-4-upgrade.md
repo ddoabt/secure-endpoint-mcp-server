@@ -7,7 +7,7 @@ reproduce it.
 
 - Python 3.13.3, pytest 9.1.1, pytest-asyncio 1.4.0, pytest-cov 7.1.0
 - Command: `uv run pytest --junitxml=test-reports/junit.xml --cov=secure_endpoint_mcp --cov-report=term-missing --cov-report=html:test-reports/htmlcov --cov-report=xml:test-reports/coverage.xml`
-- Commit: `31ff7ba` (branch `docs/init-spec-documents`)
+- Commit: `31ff7ba` (generated at this commit; committed in the following commit) (branch `docs/init-spec-documents`)
 
 ## Result
 

@@ -111,7 +111,7 @@ class MCPServer:
 
     def _route_map_fn(self, route: Any, mcp_type: MCPType) -> MCPType:
         """
-        Route mapping function for FastMCPOpenAPI.
+        Route mapping function for FastMCP's OpenAPI provider.
 
         This function is called for each route in the OpenAPI spec.
         It categorizes routes based on their HTTP method and checks if they are enabled
@@ -123,8 +123,8 @@ class MCPServer:
         to True.
 
         Args:
-            route: The route object from FastMCPOpenAPI
-            mcp_type: The default MCPType determined by FastMCPOpenAPI
+            route: The route object from the OpenAPI provider
+            mcp_type: The default MCPType determined by the OpenAPI provider
 
         Returns:
             MCPType.EXCLUDE if the route is disabled by feature flags or blocklist,
@@ -192,7 +192,7 @@ class MCPServer:
             for path, method in paths_with_methods:
                 feature_flags.register_api_group(group_name, path, method)
 
-        # Note: FastMCPOpenAPI doesn't provide direct access to routes or a disable_route method
+        # Note: FastMCP's OpenAPI provider doesn't provide direct access to routes or a disable_route method
         # Feature flag disabling will need to be handled differently or skipped
         logger.info("API groups registered with feature flag manager")
 
