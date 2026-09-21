@@ -9,7 +9,8 @@ from typing import Any, Dict, Optional, Set, Tuple, cast
 
 import html2text
 import httpx
-from fastmcp.server.openapi import FastMCPOpenAPI, MCPType
+from fastmcp import FastMCP
+from fastmcp.server.providers.openapi import MCPType
 
 from secure_endpoint_mcp.client.auth_client import AbsoluteAuthClient
 from secure_endpoint_mcp.config.logging import get_logger
@@ -35,7 +36,7 @@ class MCPServer:
         # OpenAPI spec storage (populated during initialize)
         self.openapi_spec: Optional[Dict[str, Any]] = None
         # FastMCP app instance (created during initialize)
-        self.app: Optional[FastMCPOpenAPI] = None
+        self.app: Optional[FastMCP] = None
 
         # Use the remote OpenAPI spec URL
         self.openapi_spec_url: str = (
@@ -97,9 +98,9 @@ class MCPServer:
             logger.error(f"Failed to initialize MCP server: {str(e)}")
             raise
 
-        self.app = FastMCPOpenAPI(
+        self.app = FastMCP.from_openapi(
             openapi_spec=self.openapi_spec,
-            client=self.http_client,
+            client=self.http_client,  # type: ignore[arg-type]
             route_map_fn=self._route_map_fn,
             mcp_component_fn=create_schema_fixing_component_fn(disable_validation=True),
         )
