@@ -18,7 +18,7 @@ to generate one MCP tool per API operation automatically. This means:
 - Controlling which tools are exposed is done declaratively, via `ABS_FEATURE_*`
   feature flags (`secure_endpoint_mcp/feature_flags/manager.py`) and the advanced-API
   path blocklist — not by editing a tool registry.
-- See `docs/specs/2026-08-06-secure-endpoint-mcp-server-architecture.md`
+- See `docs/spec/2026-08-06-secure-endpoint-mcp-server-architecture.md`
   for the full architecture writeup before making structural changes.
 
 ## Commands
@@ -55,12 +55,19 @@ For environment variables, Docker usage, and feature-flag operation, see
 
 ## Spec-First Workflow
 
-Design docs live in `docs/specs/`, named
-`YYYY-MM-DD-<topic>-design.md` (see the two existing docs there for examples).
+All design and planning documents live under `docs/` — never under
+`docs/superpowers/` or any other tool-specific default location. This applies
+regardless of which agent or skill produces the document.
+
+- **Specs** live in `docs/spec/`, named `YYYY-MM-DD-<topic>-design.md` (see the
+  existing docs there for examples).
+- **Implementation plans** live in `docs/plans/`, named `YYYY-MM-DD-<topic>.md`.
+  This overrides the superpowers `writing-plans` skill's own default location
+  (`docs/superpowers/plans/`) — save plans to `docs/plans/` instead.
 
 - **Architectural changes** (new subsystems, changes to how components fit
   together, anything that alters interfaces other code depends on): write a spec to
-  `docs/specs/` and get it reviewed *before* writing implementation code.
+  `docs/spec/` and get it reviewed *before* writing implementation code.
 - **Bounded changes** (a fix or small addition to an existing flow): a short design
   stated in chat and approved is enough — no spec file needed.
 
