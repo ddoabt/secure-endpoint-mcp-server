@@ -38,6 +38,8 @@ tests_qa3/
 
 Keeping this outside `tests/` is deliberate, not cosmetic: `docs/testing.md` states "all tests are unit tests with no live network or filesystem I/O" as a fact about `tests/`. Nesting a real-network suite inside it would make that statement false. `pyproject.toml`'s `[tool.pytest.ini_options]` `testpaths = ["tests"]` already excludes `tests_qa3/` from any bare `uv run pytest` invocation without needing a marker-based opt-out — this suite is invisible to the default suite and to CI by construction, not by convention that could be forgotten.
 
+The `qa3_integration` marker used in §3.2 is not load-bearing for that exclusion — it's there for clarity when running `tests_qa3/` directly (`-m qa3_integration`), and as defense-in-depth if `testpaths` is ever widened later. It needs registering in `pyproject.toml`'s `[tool.pytest.ini_options]` (`markers = ["qa3_integration: real-network test against the QA3 sandbox, run manually only"]`) — otherwise pytest emits an "unknown mark" warning, which this repo's existing test-report conventions treat as a defect (test output must be pristine).
+
 ### 3.1 The `mcp_client` fixture
 
 The one reusable component, in `tests_qa3/conftest.py`. It formalizes the manual pattern already validated twice this session (`/tmp/mcp_stdio_probe.py`, `/tmp/mcp_real_probe.py`):
