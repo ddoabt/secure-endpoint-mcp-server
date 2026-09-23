@@ -32,14 +32,22 @@ def test_fastmcp_upgrade_signs_and_reaches_real_api(mcp_client: Any) -> None:
         0,
     ), f"expected fastmcp>=4.0 in the running image, got {server_info['version']}"
 
+    stderr_before_call = len(mcp_client.stderr_lines)
     result = mcp_client.call_tool("get_devices", {"pageSize": "1"})
     assert "error" not in result, result.get("error")
     payload = json.loads(result["result"]["content"][0]["text"])
     assert isinstance(payload.get("data"), list)
 
+    # Scan only stderr emitted by *this* call, not the whole container
+    # lifetime -- otherwise this assertion would stay vacuously true even if
+    # a future change moved some other, earlier call off the signed client
+    # (e.g. the spec fetch at startup, which already uses a plain
+    # httpx.AsyncClient) and only this get_devices call still went through
+    # AbsoluteAuthClient. Scoping to post-call lines keeps this a real
+    # per-call check, not a lifetime-of-container check.
     jws_lines = [
         line
-        for line in mcp_client.stderr_lines
+        for line in mcp_client.stderr_lines[stderr_before_call:]
         if "/jws/validate" in line and "HTTP Request: POST" in line
     ]
     assert jws_lines, (

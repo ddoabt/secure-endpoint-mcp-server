@@ -40,9 +40,14 @@ Items 2-5 from `docs/spec/2026-09-23-qa3-integration-test-suite-design.md`
 binary-response decoding) and general Tier 2 health checks are not covered
 by this report — tracked as future work in that spec.
 
-Two minor findings from this round's task review are also tracked as future
-work rather than fixed here (neither weakens what this report proves):
+Four minor findings from this round's task and final reviews are also tracked
+as future work rather than fixed here (none weaken what this report proves):
 
+- `MCPClient.close()` doesn't `wait()` after `kill()` on a timeout, leaving a
+  brief zombie process entry.
+- If `MCPClient.__init__` raises during `_handshake()` (e.g. a hung
+  container), the already-spawned `docker run` subprocess is never cleaned
+  up, since the fixture only calls `close()` after a successful `yield`.
 - The `mcp_client` test-file parameter is typed `Any` rather than the real
   `MCPClient` class (a cleaner import-based typing was available but not used).
 - The scenario checks JSON-RPC-level failure only, not the MCP tool-level
