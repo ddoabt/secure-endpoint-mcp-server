@@ -32,6 +32,9 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
 asyncio_mode = "auto"
+markers = [
+    "qa3_integration: real-network test against the QA3 sandbox, run manually only (uv run pytest tests_qa3/)",
+]
 
 [tool.mypy]
 python_version = "3.13"
