@@ -55,15 +55,13 @@ For environment variables, Docker usage, and feature-flag operation, see
 
 ## Spec-First Workflow
 
-All design and planning documents live under `docs/` — never under
-`docs/superpowers/` or any other tool-specific default location. This applies
+All design and planning documents live under `docs/` — never under any other tool-specific default location. This applies
 regardless of which agent or skill produces the document.
 
 - **Specs** live in `docs/spec/`, named `YYYY-MM-DD-<topic>-design.md` (see the
   existing docs there for examples).
 - **Implementation plans** live in `docs/plans/`, named `YYYY-MM-DD-<topic>.md`.
-  This overrides the superpowers `writing-plans` skill's own default location
-  (`docs/superpowers/plans/`) — save plans to `docs/plans/` instead.
+   Save any plans to `docs/plans/`.
 
 - **Architectural changes** (new subsystems, changes to how components fit
   together, anything that alters interfaces other code depends on): write a spec to

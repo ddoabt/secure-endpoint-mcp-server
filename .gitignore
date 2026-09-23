@@ -3,3 +3,6 @@
 *.iml
 **/__pycache__/
 *.egg-info/
+.coverage
+/test-reports/
+/.superpowers/
