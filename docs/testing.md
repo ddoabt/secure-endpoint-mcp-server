@@ -73,3 +73,62 @@ coverage table) is checked in under `docs/test-reports/`, one file per run, name
 coverage or test counts meaningfully (new feature, bug fix with regression test,
 dependency upgrade) — see [`2026-09-09-baseline.md`](test-reports/2026-09-09-baseline.md)
 for the format.
+
+## 4. Real Integration Tests (`tests_qa3/`)
+
+`tests_qa3/` is a **separate** suite from `tests/` — it has real network I/O, spawns
+the actual built Docker image, and talks to a real QA3 sandbox account. It exists to
+catch exactly the class of bug unit tests structurally cannot: `tests/` mocks the
+transport layer, so a bug in *how this server integrates with fastmcp/httpx* (like the
+`send()`-vs-`request()` JWS-signing bypass fixed in commit `3af5cfa`) can pass every
+unit test while being completely broken in production. See
+[`docs/spec/2026-09-23-qa3-integration-test-suite-design.md`](spec/2026-09-23-qa3-integration-test-suite-design.md)
+for the full design rationale.
+
+**This suite never runs in default `uv run pytest` or in CI.** `pyproject.toml`'s
+`testpaths = ["tests"]` excludes it by construction — it's invisible unless you point
+pytest at it directly.
+
+### Credential handling — read this before running it
+
+The suite needs real `API_HOST`, `API_KEY`, `API_SECRET` for the QA3 sandbox. **Never
+put these in a file that could get committed** — no `.env`, no hardcoded values
+anywhere in `tests_qa3/`. The fixture (`tests_qa3/conftest.py`) only ever reads them
+from environment variables, and fails fast with a clear error if they're unset or a
+placeholder value — that's intentional, not a bug, so don't work around it by setting
+dummy values (the suite proves nothing against a placeholder).
+
+Export them into your shell for the one terminal session you're testing in, then run
+the suite in that same session:
+
+```bash
+export API_HOST=https://api.qa3.pd.aws-ca-central-1.faultless.ca
+export API_KEY=<your real QA3 key>
+export API_SECRET=<your real QA3 secret>
+uv run pytest tests_qa3/ -v -m qa3_integration
+```
+
+If your credentials already live in a tool config you don't want to hand-copy from
+(e.g. a Claude Code MCP server entry in `~/.claude.json`), extract and `export` them
+into your shell programmatically rather than pasting the values anywhere — the point
+is that the secret should only ever exist in your shell's process environment and the
+test container's process environment, never in a file, a script argument, or anything
+you might `git add`.
+
+### Running against the built image
+
+```bash
+docker build -t secure-endpoint-mcp-server:local .
+uv run pytest tests_qa3/ -v -m qa3_integration
+```
+
+`MCP_QA3_IMAGE` overrides the image tag if you want to test something other than the
+local build (e.g. a published `ghcr.io/...` release).
+
+### Reports
+
+Same convention as `docs/test-reports/` above — a dated snapshot capturing pass/fail
+and *observational evidence only* (a version string, an HTTP status line) — never a
+credential value. See
+[`2026-09-23-qa3-integration.md`](test-reports/2026-09-23-qa3-integration.md) for the
+format.
