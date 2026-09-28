@@ -13,7 +13,7 @@ ever surfacing the jump. The ticket was raised because:
 
 - There is a client building a Claude integration against this server, so
   staying current and CVE-clean is now externally visible, not just internal hygiene.
-- A CVE table posted to the ticket (ABS-299574, comment 2026-09-18) flagged 12 CVEs across 8
+- A CVE table posted to the ticket flagged 12 CVEs across 8
   packages. That table itself undercounts the real exposure — see below.
 
 **Verified CVE count (2026-09-21, queried directly against OSV.dev by package+version, deduped by
